@@ -1,0 +1,14 @@
+{
+  "name": "lista-zadan",
+  "version": "1.0.0",
+  "description": "Lista zadań: projekt startowy do kursu Claude Code",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
