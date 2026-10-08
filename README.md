@@ -26,9 +26,12 @@ npm test    # testy (wbudowany test runner Node.js)
 | `src/app.js` | obsługa interfejsu: łączy logikę z HTML-em |
 | `tests/tasks.test.js` | testy logiki zadań |
 | `server.js` | prosty serwer plików na porcie 3000 |
+| `.claude/settings.json` | ustawienia Claude Code dla tego projektu (tryb ręczny) |
 
 ## Jak korzystać w kursie
 
 Na tym projekcie pracujesz razem z Claude Code, lekcja po lekcji. Zmiany robi Claude Code na żywo: na nagraniu i u Ciebie.
+
+Plik `.claude/settings.json` ustawia w tym projekcie tryb ręczny (manual): zanim Claude Code coś zmieni albo uruchomi, pyta Cię o zgodę. Tak pracujemy na początku kursu, żebyś widział każdy krok. O ustawieniach i trybach pracy jest więcej dalej w kursie.
 
 Rozwiązania wzorcowe do ćwiczeń trafią do osobnych gałęzi `rozwiazanie/...`, wyraźnie oznaczonych. Zajrzyj do nich dopiero po własnej próbie.
