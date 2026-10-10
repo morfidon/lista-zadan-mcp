@@ -6,6 +6,9 @@
   --accent: #f28c18;
   --line: #e7e1d4;
   --done: #2e9e5b;
+  --shadow: rgba(31, 43, 77, 0.12);
+  --on-accent: #ffffff;
+  --danger: #c0392b;
 }
 
 * {
@@ -28,7 +31,7 @@ body {
   background: var(--card);
   border-radius: 16px;
   padding: 28px 28px 20px;
-  box-shadow: 0 12px 32px rgba(31, 43, 77, 0.12);
+  box-shadow: 0 12px 32px var(--shadow);
 }
 
 header {
@@ -68,7 +71,7 @@ h1 {
   border: 0;
   border-radius: 10px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -110,7 +113,7 @@ h1 {
 }
 
 .remove:hover {
-  color: #c0392b;
+  color: var(--danger);
 }
 
 .empty {
