@@ -1,6 +1,6 @@
 // Interfejs: łączy logikę zadań (tasks.js) z HTML-em i zapisem (storage.js).
 
-import { addTask, toggleTask, removeTask, countActive } from './tasks.js';
+import { addTask, toggleTask, removeTask, moveDoneToEnd, countActive } from './tasks.js';
 import { loadTasks, saveTasks } from './storage.js';
 
 const form = document.querySelector('#new-task');
@@ -27,7 +27,7 @@ function render() {
     checkbox.type = 'checkbox';
     checkbox.checked = task.done;
     checkbox.setAttribute('aria-label', `Zrobione: ${task.title}`);
-    checkbox.addEventListener('change', () => update(toggleTask(tasks, task.id)));
+    checkbox.addEventListener('change', () => update(moveDoneToEnd(toggleTask(tasks, task.id))));
 
     const title = document.createElement('span');
     title.className = 'title';
