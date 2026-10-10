@@ -21,6 +21,10 @@ export function removeTask(tasks, id) {
   return tasks.filter((task) => task.id !== id);
 }
 
+export function moveDoneToEnd(tasks) {
+  return [...tasks.filter((task) => !task.done), ...tasks.filter((task) => task.done)];
+}
+
 export function countActive(tasks) {
   return tasks.filter((task) => !task.done).length;
 }

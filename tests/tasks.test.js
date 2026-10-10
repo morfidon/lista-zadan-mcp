@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createTask, addTask, toggleTask, removeTask, countActive, countDone } from '../src/tasks.js';
+import { createTask, addTask, toggleTask, removeTask, countActive, countDone, moveDoneToEnd } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
   assert.deepEqual(createTask('  Kupić mleko  ', 1), { id: 1, title: 'Kupić mleko', done: false });
@@ -31,6 +31,19 @@ test('removeTask usuwa zadanie o danym id', () => {
     { id: 2, title: 'B', done: false },
   ];
   assert.deepEqual(removeTask(tasks, 1).map((task) => task.id), [2]);
+});
+
+test('moveDoneToEnd przenosi zrobione na koniec, zachowuje kolejność i nie zmienia starej listy', () => {
+  const before = [
+    { id: 1, title: 'A', done: true },
+    { id: 2, title: 'B', done: false },
+    { id: 3, title: 'C', done: true },
+    { id: 4, title: 'D', done: false },
+  ];
+  const after = moveDoneToEnd(before);
+  assert.deepEqual(after.map((task) => task.id), [2, 4, 1, 3]);
+  assert.deepEqual(before.map((task) => task.id), [1, 2, 3, 4]);
+  assert.deepEqual(moveDoneToEnd([]), []);
 });
 
 test('countActive liczy tylko niezrobione zadania', () => {
