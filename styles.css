@@ -5,6 +5,7 @@
   --muted: #6b7390;
   --accent: #f28c18;
   --line: #e7e1d4;
+  --done: #2e9e5b;
 }
 
 * {
@@ -83,8 +84,12 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 4px;
+  padding: 10px 4px 10px 12px;
   border-bottom: 1px solid var(--line);
+}
+
+.task.done {
+  box-shadow: inset 4px 0 0 var(--done);
 }
 
 .task .title {
