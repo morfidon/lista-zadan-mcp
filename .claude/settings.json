@@ -1,5 +1,12 @@
 {
   "permissions": {
-    "defaultMode": "manual"
+    "deny": [
+      "Read(./.env)"
+    ],
+    "ask": [
+      "PowerShell(git push *)",
+      "Bash(git push *)"
+    ],
+    "defaultMode": "default"
   }
 }

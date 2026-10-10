@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createTask, addTask, toggleTask, removeTask, countActive } from '../src/tasks.js';
+import { createTask, addTask, toggleTask, removeTask, countActive, countDone } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
   assert.deepEqual(createTask('  Kupić mleko  ', 1), { id: 1, title: 'Kupić mleko', done: false });
@@ -40,4 +40,14 @@ test('countActive liczy tylko niezrobione zadania', () => {
     { id: 3, title: 'C', done: false },
   ];
   assert.equal(countActive(tasks), 2);
+});
+
+test('countDone liczy tylko zrobione zadania', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false },
+    { id: 2, title: 'B', done: true },
+    { id: 3, title: 'C', done: true },
+  ];
+  assert.equal(countDone(tasks), 2);
+  assert.equal(countDone([]), 0);
 });
