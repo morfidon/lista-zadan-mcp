@@ -1,10 +1,19 @@
 // Interfejs: łączy logikę zadań (tasks.js) z HTML-em i zapisem (storage.js).
 
-import { addTask, toggleTask, removeTask, moveDoneToEnd, countActive } from './tasks.js';
+import {
+  addTask,
+  toggleTask,
+  removeTask,
+  moveDoneToEnd,
+  countActive,
+  todayString,
+  isOverdue,
+} from './tasks.js';
 import { loadTasks, saveTasks } from './storage.js';
 
 const form = document.querySelector('#new-task');
 const input = document.querySelector('#task-title');
+const dueInput = document.querySelector('#task-due');
 const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const empty = document.querySelector('#empty');
@@ -19,6 +28,7 @@ function update(next) {
 
 function render() {
   list.replaceChildren();
+  const today = todayString();
   for (const task of tasks) {
     const item = document.createElement('li');
     item.className = task.done ? 'task done' : 'task';
@@ -40,7 +50,14 @@ function render() {
     remove.setAttribute('aria-label', `Usuń: ${task.title}`);
     remove.addEventListener('click', () => update(removeTask(tasks, task.id)));
 
-    item.append(checkbox, title, remove);
+    item.append(checkbox, title);
+    if (typeof task.dueDate === 'string') {
+      const due = document.createElement('span');
+      due.className = isOverdue(task, today) ? 'due overdue' : 'due';
+      due.textContent = `Termin: ${task.dueDate}`;
+      item.append(due);
+    }
+    item.append(remove);
     list.append(item);
   }
 
@@ -55,8 +72,9 @@ form.addEventListener('submit', (event) => {
     input.focus();
     return;
   }
-  update(addTask(tasks, input.value));
+  update(addTask(tasks, input.value, undefined, dueInput.value));
   input.value = '';
+  dueInput.value = '';
   input.focus();
 });
 

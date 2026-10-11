@@ -54,16 +54,23 @@ h1 {
 
 .new-task {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
 
 .new-task input {
-  flex: 1;
+  flex: 1 1 180px;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   font: inherit;
+}
+
+.new-task input[type="date"] {
+  flex: 0 0 auto;
+  color: var(--ink);
 }
 
 .new-task button {
@@ -75,6 +82,8 @@ h1 {
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .tasks {
@@ -102,6 +111,17 @@ h1 {
 .task.done .title {
   color: var(--muted);
   text-decoration: line-through;
+}
+
+.task .due {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.task .due.overdue {
+  color: var(--danger);
+  font-weight: 600;
 }
 
 .remove {
