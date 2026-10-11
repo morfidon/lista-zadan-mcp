@@ -1,6 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createTask, addTask, toggleTask, removeTask, countActive, countDone, moveDoneToEnd } from '../src/tasks.js';
+import {
+  createTask,
+  addTask,
+  toggleTask,
+  removeTask,
+  countActive,
+  countDone,
+  moveDoneToEnd,
+  todayString,
+  isOverdue,
+} from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
   assert.deepEqual(createTask('  Kupić mleko  ', 1), { id: 1, title: 'Kupić mleko', done: false });
@@ -63,4 +73,45 @@ test('countDone liczy tylko zrobione zadania', () => {
   ];
   assert.equal(countDone(tasks), 2);
   assert.equal(countDone([]), 0);
+});
+
+test('createTask zapisuje termin, gdy jest podany', () => {
+  assert.deepEqual(createTask('A', 1, '2026-03-09'), { id: 1, title: 'A', done: false, dueDate: '2026-03-09' });
+});
+
+test('createTask bez terminu albo z pustym nie dodaje pola dueDate', () => {
+  assert.equal('dueDate' in createTask('A', 1), false);
+  assert.equal('dueDate' in createTask('A', 1, ''), false);
+  assert.equal('dueDate' in createTask('A', 1, null), false);
+});
+
+test('createTask odrzuca zły format i nieistniejącą datę terminu', () => {
+  assert.throws(() => createTask('A', 1, '9.03.2026'), /Termin/);
+  assert.throws(() => createTask('A', 1, '2026-02-31'), /Termin/);
+  assert.throws(() => createTask('A', 1, 20260309), /Termin/);
+});
+
+test('addTask przekazuje termin i nie zmienia starej listy', () => {
+  const before = [{ id: 1, title: 'A', done: false }];
+  const after = addTask(before, 'B', 2, '2026-03-09');
+  assert.equal(after[1].dueDate, '2026-03-09');
+  assert.equal(before.length, 1);
+});
+
+test('todayString zwraca lokalną datę RRRR-MM-DD', () => {
+  assert.equal(todayString(new Date(2026, 0, 5, 23, 59)), '2026-01-05');
+  assert.equal(todayString(new Date(2026, 11, 31, 0, 0)), '2026-12-31');
+});
+
+test('isOverdue: po terminie dopiero od następnego dnia', () => {
+  const task = { id: 1, title: 'A', done: false, dueDate: '2026-03-09' };
+  assert.equal(isOverdue(task, '2026-03-10'), true);
+  assert.equal(isOverdue(task, '2026-03-09'), false);
+  assert.equal(isOverdue(task, '2026-03-08'), false);
+});
+
+test('isOverdue: brak terminu, zła wartość albo zrobione to nie po terminie', () => {
+  assert.equal(isOverdue({ id: 1, title: 'A', done: false }, '2026-03-10'), false);
+  assert.equal(isOverdue({ id: 1, title: 'A', done: false, dueDate: 5 }, '2026-03-10'), false);
+  assert.equal(isOverdue({ id: 1, title: 'A', done: true, dueDate: '2026-03-01' }, '2026-03-10'), false);
 });
