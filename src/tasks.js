@@ -28,7 +28,7 @@ export function createTask(title, id = Date.now(), dueDate) {
 }
 
 export function addTask(tasks, title, id, dueDate) {
-  return [...tasks, createTask(title, id, dueDate)];
+  return moveDoneToEnd([...tasks, createTask(title, id, dueDate)]);
 }
 
 // Lokalna data (nie UTC), żeby „dziś” zgadzało się z dniem użytkownika.
@@ -41,6 +41,11 @@ export function todayString(now = new Date()) {
 // Po terminie dopiero od następnego dnia; zrobione i bez terminu nigdy.
 export function isOverdue(task, today) {
   return typeof task.dueDate === 'string' && !task.done && task.dueDate < today;
+}
+
+// Tekst terminu do wyświetlenia: „dziś” zamiast daty, gdy termin wypada dzisiaj.
+export function formatDue(dueDate, today) {
+  return `Termin: ${dueDate === today ? 'dziś' : dueDate}`;
 }
 
 export function toggleTask(tasks, id) {

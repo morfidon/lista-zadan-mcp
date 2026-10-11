@@ -10,6 +10,7 @@ import {
   moveDoneToEnd,
   todayString,
   isOverdue,
+  formatDue,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -26,6 +27,17 @@ test('addTask dodaje zadanie na koniec i nie zmienia starej listy', () => {
   assert.equal(after.length, 2);
   assert.equal(after[1].title, 'B');
   assert.equal(before.length, 1);
+});
+
+test('addTask wstawia nowe zadanie przed zrobionymi, zrobione zostają na końcu', () => {
+  const before = [
+    { id: 1, title: 'A', done: false },
+    { id: 2, title: 'B', done: true },
+    { id: 3, title: 'C', done: true },
+  ];
+  const after = addTask(before, 'D', 4);
+  assert.deepEqual(after.map((task) => task.id), [1, 4, 2, 3]);
+  assert.deepEqual(before.map((task) => task.id), [1, 2, 3]);
 });
 
 test('toggleTask odhacza i przywraca zadanie', () => {
@@ -114,4 +126,10 @@ test('isOverdue: brak terminu, zła wartość albo zrobione to nie po terminie',
   assert.equal(isOverdue({ id: 1, title: 'A', done: false }, '2026-03-10'), false);
   assert.equal(isOverdue({ id: 1, title: 'A', done: false, dueDate: 5 }, '2026-03-10'), false);
   assert.equal(isOverdue({ id: 1, title: 'A', done: true, dueDate: '2026-03-01' }, '2026-03-10'), false);
+});
+
+test('formatDue pokazuje „dziś” dla dzisiejszego terminu, a datę dla pozostałych', () => {
+  assert.equal(formatDue('2026-03-09', '2026-03-09'), 'Termin: dziś');
+  assert.equal(formatDue('2026-03-10', '2026-03-09'), 'Termin: 2026-03-10');
+  assert.equal(formatDue('2026-03-08', '2026-03-09'), 'Termin: 2026-03-08');
 });

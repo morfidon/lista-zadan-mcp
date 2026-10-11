@@ -1,13 +1,13 @@
 :root {
   --paper: #f7f2e9;
-  --card: #ffffff;
+  --card: #fff;
   --ink: #1f2b4d;
   --muted: #6b7390;
   --accent: #f28c18;
   --line: #e7e1d4;
   --done: #2e9e5b;
-  --shadow: rgba(31, 43, 77, 0.12);
-  --on-accent: #ffffff;
+  --shadow: rgb(31 43 77 / 12%);
+  --on-accent: #fff;
   --danger: #c0392b;
 }
 
