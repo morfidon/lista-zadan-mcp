@@ -8,6 +8,7 @@ import {
   countActive,
   todayString,
   isOverdue,
+  formatDue,
 } from './tasks.js';
 import { loadTasks, saveTasks } from './storage.js';
 
@@ -54,7 +55,7 @@ function render() {
     if (typeof task.dueDate === 'string') {
       const due = document.createElement('span');
       due.className = isOverdue(task, today) ? 'due overdue' : 'due';
-      due.textContent = `Termin: ${task.dueDate}`;
+      due.textContent = formatDue(task.dueDate, today);
       item.append(due);
     }
     item.append(remove);
