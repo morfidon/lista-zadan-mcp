@@ -46,7 +46,17 @@ const emptyMessages = {
   done: 'Żadne zadanie nie jest jeszcze zrobione.',
 };
 
-let tasks = loadTasks();
+const recovery = document.querySelector('#recovery');
+
+function setRecoveryVisible(visible) {
+  recovery.hidden = !visible;
+}
+
+document.querySelector('#recovery-close').addEventListener('click', () => setRecoveryVisible(false));
+
+const loaded = loadTasks();
+setRecoveryVisible(loaded.corrupted);
+let tasks = loaded.tasks;
 let filter = 'all';
 
 for (const button of filterButtons) {
@@ -62,40 +72,44 @@ function update(next) {
   render();
 }
 
+function createTaskItem(task, today) {
+  const item = document.createElement('li');
+  item.className = task.done ? 'task done' : 'task';
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = task.done;
+  checkbox.setAttribute('aria-label', `Zrobione: ${task.title}`);
+  checkbox.addEventListener('change', () => update(moveDoneToEnd(toggleTask(tasks, task.id))));
+
+  const title = document.createElement('span');
+  title.className = 'title';
+  title.textContent = task.title;
+
+  const remove = document.createElement('button');
+  remove.type = 'button';
+  remove.className = 'remove';
+  remove.textContent = '×';
+  remove.setAttribute('aria-label', `Usuń: ${task.title}`);
+  remove.addEventListener('click', () => update(removeTask(tasks, task.id)));
+
+  item.append(checkbox, title);
+  if (typeof task.dueDate === 'string') {
+    const due = document.createElement('span');
+    due.className = isOverdue(task, today) ? 'due overdue' : 'due';
+    due.textContent = formatDue(task.dueDate, today);
+    item.append(due);
+  }
+  item.append(remove);
+  return item;
+}
+
 function render() {
   list.replaceChildren();
   const today = todayString();
   const visible = filterTasks(tasks, filter);
   for (const task of visible) {
-    const item = document.createElement('li');
-    item.className = task.done ? 'task done' : 'task';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = task.done;
-    checkbox.setAttribute('aria-label', `Zrobione: ${task.title}`);
-    checkbox.addEventListener('change', () => update(moveDoneToEnd(toggleTask(tasks, task.id))));
-
-    const title = document.createElement('span');
-    title.className = 'title';
-    title.textContent = task.title;
-
-    const remove = document.createElement('button');
-    remove.type = 'button';
-    remove.className = 'remove';
-    remove.textContent = '×';
-    remove.setAttribute('aria-label', `Usuń: ${task.title}`);
-    remove.addEventListener('click', () => update(removeTask(tasks, task.id)));
-
-    item.append(checkbox, title);
-    if (typeof task.dueDate === 'string') {
-      const due = document.createElement('span');
-      due.className = isOverdue(task, today) ? 'due overdue' : 'due';
-      due.textContent = formatDue(task.dueDate, today);
-      item.append(due);
-    }
-    item.append(remove);
-    list.append(item);
+    list.append(createTaskItem(task, today));
   }
 
   const active = countActive(tasks);

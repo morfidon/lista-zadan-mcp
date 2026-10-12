@@ -39,6 +39,11 @@
       <button type="button" data-filter="done" aria-pressed="false">Zrobione</button>
     </div>
 
+    <div id="recovery" class="recovery" role="alert" hidden>
+      <p>Nie udało się odczytać zapisanych zadań, więc widzisz przykładowe. Uszkodzony zapis został zachowany w localStorage pod kluczem <code>lista-zadan.uszkodzone</code>.</p>
+      <button id="recovery-close" type="button" aria-label="Zamknij komunikat">×</button>
+    </div>
+
     <ul id="tasks" class="tasks"></ul>
     <p id="empty" class="empty" hidden>Brak zadań. Dodaj pierwsze!</p>
   </main>
