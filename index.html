@@ -30,6 +30,11 @@
     <form id="new-task" class="new-task" autocomplete="off">
       <input id="task-title" type="text" placeholder="Co jest do zrobienia?" aria-label="Nowe zadanie">
       <input id="task-due" type="date" aria-label="Termin wykonania">
+      <select id="task-priority" aria-label="Priorytet">
+        <option value="low">Niski</option>
+        <option value="normal" selected>Normalny</option>
+        <option value="high">Wysoki</option>
+      </select>
       <button type="submit">Dodaj zadanie</button>
     </form>
 

@@ -9,6 +9,7 @@
   --shadow: rgb(31 43 77 / 12%);
   --on-accent: #fff;
   --danger: #c0392b;
+  --priority-low: #3a7bd5;
 
   color-scheme: light;
 }
@@ -22,6 +23,7 @@
   --done: #4cc47f;
   --shadow: rgb(0 0 0 / 40%);
   --danger: #ff6b5b;
+  --priority-low: #6fa8ff;
 
   color-scheme: dark;
 }
@@ -93,6 +95,16 @@ h1 {
 .new-task input {
   flex: 1 1 180px;
   min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+
+.new-task select {
+  flex: 0 0 auto;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -207,6 +219,27 @@ h1 {
 }
 
 .task .due.overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.task .priority {
+  padding: 2px 8px;
+  border: 1px solid currentcolor;
+  border-radius: 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.priority-low {
+  color: var(--priority-low);
+}
+
+.priority-normal {
+  color: var(--muted);
+}
+
+.priority-high {
   color: var(--danger);
   font-weight: 600;
 }
