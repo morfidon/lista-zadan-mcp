@@ -143,6 +143,36 @@ h1 {
   font-weight: 600;
 }
 
+.recovery {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--danger);
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.recovery[hidden] {
+  display: none;
+}
+
+.recovery p {
+  flex: 1;
+  margin: 0;
+}
+
+.recovery button {
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .tasks {
   list-style: none;
   margin: 0;
