@@ -60,6 +60,17 @@ export function moveDoneToEnd(tasks) {
   return [...tasks.filter((task) => !task.done), ...tasks.filter((task) => task.done)];
 }
 
+// Filtr widoku: 'all' (wszystkie), 'active' (do zrobienia), 'done' (zrobione).
+export function filterTasks(tasks, filter) {
+  if (filter === 'active') {
+    return tasks.filter((task) => !task.done);
+  }
+  if (filter === 'done') {
+    return tasks.filter((task) => task.done);
+  }
+  return [...tasks];
+}
+
 export function countActive(tasks) {
   return tasks.filter((task) => !task.done).length;
 }

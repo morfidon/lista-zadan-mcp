@@ -5,3 +5,6 @@ Thumbs.db
 
 # lokalne ustawienia Claude Code: tylko Twoje, poza gitem
 .claude/settings.local.json
+
+# zrzuty ekranu i pliki robocze playwright
+.playwright-mcp/

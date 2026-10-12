@@ -11,6 +11,7 @@ import {
   todayString,
   isOverdue,
   formatDue,
+  filterTasks,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -132,4 +133,17 @@ test('formatDue pokazuje „dziś” dla dzisiejszego terminu, a datę dla pozos
   assert.equal(formatDue('2026-03-09', '2026-03-09'), 'Termin: dziś');
   assert.equal(formatDue('2026-03-10', '2026-03-09'), 'Termin: 2026-03-10');
   assert.equal(formatDue('2026-03-08', '2026-03-09'), 'Termin: 2026-03-08');
+});
+
+test('filterTasks zwraca wszystkie, tylko do zrobienia albo tylko zrobione i nie zmienia listy', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false },
+    { id: 2, title: 'B', done: true },
+    { id: 3, title: 'C', done: false },
+  ];
+  assert.deepEqual(filterTasks(tasks, 'all').map((t) => t.id), [1, 2, 3]);
+  assert.deepEqual(filterTasks(tasks, 'active').map((t) => t.id), [1, 3]);
+  assert.deepEqual(filterTasks(tasks, 'done').map((t) => t.id), [2]);
+  assert.deepEqual(filterTasks(tasks, 'nieznany').map((t) => t.id), [1, 2, 3]);
+  assert.equal(tasks.length, 3);
 });
