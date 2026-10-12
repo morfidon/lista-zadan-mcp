@@ -12,6 +12,7 @@ import {
   isOverdue,
   formatDue,
   filterTasks,
+  getPriority,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -146,4 +147,28 @@ test('filterTasks zwraca wszystkie, tylko do zrobienia albo tylko zrobione i nie
   assert.deepEqual(filterTasks(tasks, 'done').map((t) => t.id), [2]);
   assert.deepEqual(filterTasks(tasks, 'nieznany').map((t) => t.id), [1, 2, 3]);
   assert.equal(tasks.length, 3);
+});
+
+test('createTask: priorytet normalny jest domyślny i nie trafia do zadania', () => {
+  assert.equal('priority' in createTask('A', 1), false);
+  assert.equal(getPriority(createTask('A', 1)), 'normal');
+});
+
+test('createTask zapisuje niski i wysoki priorytet', () => {
+  assert.equal(createTask('A', 1, '', 'high').priority, 'high');
+  assert.equal(createTask('A', 1, undefined, 'low').priority, 'low');
+});
+
+test('createTask odrzuca nieznany priorytet', () => {
+  assert.throws(() => createTask('A', 1, undefined, 'pilny'), /Priorytet/);
+});
+
+test('addTask przekazuje priorytet', () => {
+  assert.equal(addTask([], 'A', 1, '', 'high')[0].priority, 'high');
+});
+
+test('getPriority: stare zadania bez pola i nieznane wartości są normalne', () => {
+  assert.equal(getPriority({ id: 1, title: 'A', done: false }), 'normal');
+  assert.equal(getPriority({ priority: 'xyz' }), 'normal');
+  assert.equal(getPriority({ priority: 'low' }), 'low');
 });

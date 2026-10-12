@@ -11,24 +11,36 @@ function isValidDate(value) {
   return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }
 
+export const PRIORITIES = ['low', 'normal', 'high'];
+export const PRIORITY_LABELS = { low: 'niski', normal: 'normalny', high: 'wysoki' };
+
+// Brak pola (stare zapisy) lub nieznana wartość oznacza priorytet normalny.
+export function getPriority(task) {
+  return PRIORITIES.includes(task.priority) ? task.priority : 'normal';
+}
+
 // Termin jest opcjonalny: bez niego zadanie nie ma pola dueDate (RRRR-MM-DD).
-export function createTask(title, id = Date.now(), dueDate) {
+// Priorytet też: normalny jest domyślny i nie jest zapisywany w zadaniu.
+export function createTask(title, id = Date.now(), dueDate, priority = 'normal') {
   const clean = String(title ?? '').trim();
   if (!clean) {
     throw new Error('Zadanie musi mieć treść.');
   }
-  const task = { id, title: clean, done: false };
-  if (dueDate === undefined || dueDate === null || dueDate === '') {
-    return task;
+  if (!PRIORITIES.includes(priority)) {
+    throw new Error('Priorytet musi być: low, normal albo high.');
   }
-  if (typeof dueDate !== 'string' || !isValidDate(dueDate)) {
-    throw new Error('Termin musi mieć format RRRR-MM-DD.');
+  let task = { id, title: clean, done: false };
+  if (dueDate !== undefined && dueDate !== null && dueDate !== '') {
+    if (typeof dueDate !== 'string' || !isValidDate(dueDate)) {
+      throw new Error('Termin musi mieć format RRRR-MM-DD.');
+    }
+    task = { ...task, dueDate };
   }
-  return { ...task, dueDate };
+  return priority === 'normal' ? task : { ...task, priority };
 }
 
-export function addTask(tasks, title, id, dueDate) {
-  return moveDoneToEnd([...tasks, createTask(title, id, dueDate)]);
+export function addTask(tasks, title, id, dueDate, priority) {
+  return moveDoneToEnd([...tasks, createTask(title, id, dueDate, priority)]);
 }
 
 // Lokalna data (nie UTC), żeby „dziś” zgadzało się z dniem użytkownika.

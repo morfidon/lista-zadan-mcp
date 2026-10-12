@@ -10,12 +10,15 @@ import {
   todayString,
   isOverdue,
   formatDue,
+  getPriority,
+  PRIORITY_LABELS,
 } from './tasks.js';
 import { loadTasks, saveTasks } from './storage.js';
 
 const form = document.querySelector('#new-task');
 const input = document.querySelector('#task-title');
 const dueInput = document.querySelector('#task-due');
+const priorityInput = document.querySelector('#task-priority');
 const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const empty = document.querySelector('#empty');
@@ -93,7 +96,13 @@ function createTaskItem(task, today) {
   remove.setAttribute('aria-label', `Usuń: ${task.title}`);
   remove.addEventListener('click', () => update(removeTask(tasks, task.id)));
 
-  item.append(checkbox, title);
+  const priority = getPriority(task);
+  const badge = document.createElement('span');
+  badge.className = `priority priority-${priority}`;
+  badge.textContent = PRIORITY_LABELS[priority];
+  badge.title = `Priorytet: ${PRIORITY_LABELS[priority]}`;
+
+  item.append(checkbox, title, badge);
   if (typeof task.dueDate === 'string') {
     const due = document.createElement('span');
     due.className = isOverdue(task, today) ? 'due overdue' : 'due';
@@ -127,9 +136,10 @@ form.addEventListener('submit', (event) => {
     input.focus();
     return;
   }
-  update(addTask(tasks, input.value, undefined, dueInput.value));
+  update(addTask(tasks, input.value, undefined, dueInput.value, priorityInput.value));
   input.value = '';
   dueInput.value = '';
+  priorityInput.value = 'normal';
   input.focus();
 });
 
