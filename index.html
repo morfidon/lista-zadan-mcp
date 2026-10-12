@@ -5,13 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lista zadań</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f28c18'/><path d='M27 52l15 15 32-34' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <script>
+    // Ustawia motyw przed pierwszym malowaniem strony, żeby nie było błysku.
+    try {
+      const saved = localStorage.getItem('motyw');
+      const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch {
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="card">
     <header>
       <h1>Lista zadań</h1>
-      <p id="counter" class="counter">Do zrobienia: 0</p>
+      <div class="header-side">
+        <p id="counter" class="counter">Do zrobienia: 0</p>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Włącz tryb ciemny"></button>
+      </div>
     </header>
 
     <form id="new-task" class="new-task" autocomplete="off">
@@ -19,6 +32,12 @@
       <input id="task-due" type="date" aria-label="Termin wykonania">
       <button type="submit">Dodaj zadanie</button>
     </form>
+
+    <div id="filters" class="filters" role="group" aria-label="Filtr zadań">
+      <button type="button" data-filter="all" aria-pressed="true">Wszystkie</button>
+      <button type="button" data-filter="active" aria-pressed="false">Do zrobienia</button>
+      <button type="button" data-filter="done" aria-pressed="false">Zrobione</button>
+    </div>
 
     <ul id="tasks" class="tasks"></ul>
     <p id="empty" class="empty" hidden>Brak zadań. Dodaj pierwsze!</p>

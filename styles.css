@@ -9,6 +9,21 @@
   --shadow: rgb(31 43 77 / 12%);
   --on-accent: #fff;
   --danger: #c0392b;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #141a2e;
+  --card: #1e2640;
+  --ink: #e8ebf5;
+  --muted: #9aa3c0;
+  --line: #333d5e;
+  --done: #4cc47f;
+  --shadow: rgb(0 0 0 / 40%);
+  --danger: #ff6b5b;
+
+  color-scheme: dark;
 }
 
 * {
@@ -46,10 +61,26 @@ h1 {
   font-size: 28px;
 }
 
+.header-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .counter {
   margin: 0;
   color: var(--muted);
   font-size: 14px;
+}
+
+.theme-toggle {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: none;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .new-task {
@@ -65,6 +96,8 @@ h1 {
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
   font: inherit;
 }
 
@@ -84,6 +117,30 @@ h1 {
   cursor: pointer;
   flex: 0 0 auto;
   white-space: nowrap;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.filters button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filters button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
 }
 
 .tasks {

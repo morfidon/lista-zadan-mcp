@@ -6,6 +6,7 @@ import {
   removeTask,
   moveDoneToEnd,
   countActive,
+  filterTasks,
   todayString,
   isOverdue,
   formatDue,
@@ -19,7 +20,41 @@ const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const empty = document.querySelector('#empty');
 
+const themeToggle = document.querySelector('#theme-toggle');
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const dark = theme === 'dark';
+  themeToggle.textContent = dark ? '☀️' : '🌙';
+  themeToggle.setAttribute('aria-label', dark ? 'Włącz tryb jasny' : 'Włącz tryb ciemny');
+  try {
+    localStorage.setItem('motyw', theme);
+  } catch {
+    // Bez zapisu motyw działa tylko do odświeżenia strony.
+  }
+}
+
+themeToggle.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+
+const filterButtons = document.querySelectorAll('#filters button');
+const emptyMessages = {
+  all: 'Brak zadań. Dodaj pierwsze!',
+  active: 'Nic do zrobienia. Odpocznij!',
+  done: 'Żadne zadanie nie jest jeszcze zrobione.',
+};
+
 let tasks = loadTasks();
+let filter = 'all';
+
+for (const button of filterButtons) {
+  button.addEventListener('click', () => {
+    filter = button.dataset.filter;
+    render();
+  });
+}
 
 function update(next) {
   tasks = next;
@@ -30,7 +65,8 @@ function update(next) {
 function render() {
   list.replaceChildren();
   const today = todayString();
-  for (const task of tasks) {
+  const visible = filterTasks(tasks, filter);
+  for (const task of visible) {
     const item = document.createElement('li');
     item.className = task.done ? 'task done' : 'task';
 
@@ -64,7 +100,11 @@ function render() {
 
   const active = countActive(tasks);
   counter.textContent = `Do zrobienia: ${active}`;
-  empty.hidden = tasks.length > 0;
+  for (const button of filterButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
+  }
+  empty.textContent = emptyMessages[tasks.length === 0 ? 'all' : filter];
+  empty.hidden = visible.length > 0;
 }
 
 form.addEventListener('submit', (event) => {
