@@ -13,6 +13,7 @@ function isValidDate(value) {
 
 export const PRIORITIES = ['low', 'normal', 'high'];
 export const PRIORITY_LABELS = { low: 'niski', normal: 'normalny', high: 'wysoki' };
+const PRIORITY_RANK = { high: 0, normal: 1, low: 2 };
 
 // Brak pola (stare zapisy) lub nieznana wartość oznacza priorytet normalny.
 export function getPriority(task) {
@@ -70,6 +71,14 @@ export function removeTask(tasks, id) {
 
 export function moveDoneToEnd(tasks) {
   return [...tasks.filter((task) => !task.done), ...tasks.filter((task) => task.done)];
+}
+
+// Kolejność widoku: do zrobienia od wysokiego priorytetu do niskiego, zrobione na końcu.
+// Przy równym priorytecie zostaje dotychczasowa kolejność (sort jest stabilny).
+export function sortByPriority(tasks) {
+  const active = tasks.filter((task) => !task.done);
+  active.sort((a, b) => PRIORITY_RANK[getPriority(a)] - PRIORITY_RANK[getPriority(b)]);
+  return [...active, ...tasks.filter((task) => task.done)];
 }
 
 // Filtr widoku: 'all' (wszystkie), 'active' (do zrobienia), 'done' (zrobione).

@@ -13,6 +13,7 @@ import {
   formatDue,
   filterTasks,
   getPriority,
+  sortByPriority,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -171,4 +172,38 @@ test('getPriority: stare zadania bez pola i nieznane wartości są normalne', ()
   assert.equal(getPriority({ id: 1, title: 'A', done: false }), 'normal');
   assert.equal(getPriority({ priority: 'xyz' }), 'normal');
   assert.equal(getPriority({ priority: 'low' }), 'low');
+});
+
+test('sortByPriority: wysokie, normalne, niskie, a zrobione na końcu', () => {
+  const before = [
+    { id: 1, title: 'A', done: false, priority: 'low' },
+    { id: 2, title: 'B', done: true, priority: 'high' },
+    { id: 3, title: 'C', done: false },
+    { id: 4, title: 'D', done: false, priority: 'high' },
+    { id: 5, title: 'E', done: true, priority: 'low' },
+  ];
+  assert.deepEqual(sortByPriority(before).map((task) => task.id), [4, 3, 1, 2, 5]);
+  assert.deepEqual(before.map((task) => task.id), [1, 2, 3, 4, 5]);
+});
+
+test('sortByPriority zachowuje kolejność przy równym priorytecie i traktuje nieznany jako normalny', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false, priority: 'xyz' },
+    { id: 2, title: 'B', done: false, priority: 'high' },
+    { id: 3, title: 'C', done: false },
+    { id: 4, title: 'D', done: false, priority: 'high' },
+  ];
+  assert.deepEqual(sortByPriority(tasks).map((task) => task.id), [2, 4, 1, 3]);
+  assert.deepEqual(sortByPriority([]), []);
+});
+
+test('sortByPriority: uszkodzony priorytet z zapisu (null, liczba) liczy się jako normalny', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false, priority: 'low' },
+    { id: 2, title: 'B', done: false, priority: null },
+    { id: 3, title: 'C', done: false, priority: 2 },
+    { id: 4, title: 'D', done: false, priority: 'high' },
+    { id: 5, title: 'E', done: true, priority: null },
+  ];
+  assert.deepEqual(sortByPriority(tasks).map((task) => task.id), [4, 2, 3, 1, 5]);
 });

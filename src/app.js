@@ -7,6 +7,7 @@ import {
   moveDoneToEnd,
   countActive,
   filterTasks,
+  sortByPriority,
   todayString,
   isOverdue,
   formatDue,
@@ -116,7 +117,7 @@ function createTaskItem(task, today) {
 function render() {
   list.replaceChildren();
   const today = todayString();
-  const visible = filterTasks(tasks, filter);
+  const visible = filterTasks(sortByPriority(tasks), filter);
   for (const task of visible) {
     list.append(createTaskItem(task, today));
   }
