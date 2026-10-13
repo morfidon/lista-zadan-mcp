@@ -4,6 +4,7 @@ const KOLOR = /#[0-9a-f]{3,8}\b|\b(?:rgb|hsl|hwb|lab|lch|oklab|oklch|color|color
 
 export default {
   extends: ['stylelint-config-standard'],
+  ignoreFiles: ['.claude/**'],
   rules: {
     // Poza zmiennymi (--*): hex i funkcje kolorów zabronione.
     'declaration-property-value-disallowed-list': [
