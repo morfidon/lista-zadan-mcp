@@ -57,8 +57,18 @@ export function isOverdue(task, today) {
 }
 
 // Tekst terminu do wyświetlenia: „dziś” zamiast daty, gdy termin wypada dzisiaj.
+// Daty w formacie RRRR-MM-DD liczone w UTC, żeby zmiana czasu nie przesuwała dnia.
+function addDays(isoDate, days) {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 export function formatDue(dueDate, today) {
-  return `Termin: ${dueDate === today ? 'dziś' : dueDate}`;
+  if (dueDate === today) return 'Termin: dziś';
+  if (dueDate === addDays(today, 1)) return 'Termin: jutro';
+  if (dueDate === addDays(today, -1)) return 'Termin: wczoraj';
+  return `Termin: ${dueDate}`;
 }
 
 export function toggleTask(tasks, id) {
