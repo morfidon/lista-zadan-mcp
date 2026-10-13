@@ -8,5 +8,8 @@
       "Bash(git push *)"
     ],
     "defaultMode": "default"
+  },
+  "worktree": {
+    "baseRef": "head"
   }
 }

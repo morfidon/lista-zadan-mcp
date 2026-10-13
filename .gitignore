@@ -11,3 +11,6 @@ Thumbs.db
 
 # zrzuty ekranu i pliki robocze playwright
 .playwright-mcp/
+
+# stanowiska Claude Code (git worktree)
+.claude/worktrees/
