@@ -134,8 +134,18 @@ test('isOverdue: brak terminu, zła wartość albo zrobione to nie po terminie',
 
 test('formatDue pokazuje „dziś” dla dzisiejszego terminu, a datę dla pozostałych', () => {
   assert.equal(formatDue('2026-03-09', '2026-03-09'), 'Termin: dziś');
-  assert.equal(formatDue('2026-03-10', '2026-03-09'), 'Termin: 2026-03-10');
-  assert.equal(formatDue('2026-03-08', '2026-03-09'), 'Termin: 2026-03-08');
+  assert.equal(formatDue('2026-03-11', '2026-03-09'), 'Termin: 2026-03-11');
+  assert.equal(formatDue('2026-03-07', '2026-03-09'), 'Termin: 2026-03-07');
+});
+
+test('formatDue pokazuje „jutro” dla jutrzejszego terminu', () => {
+  assert.equal(formatDue('2026-03-10', '2026-03-09'), 'Termin: jutro');
+  assert.equal(formatDue('2026-04-01', '2026-03-31'), 'Termin: jutro');
+});
+
+test('formatDue pokazuje „wczoraj” dla wczorajszego terminu', () => {
+  assert.equal(formatDue('2026-03-08', '2026-03-09'), 'Termin: wczoraj');
+  assert.equal(formatDue('2026-02-28', '2026-03-01'), 'Termin: wczoraj');
 });
 
 test('filterTasks zwraca wszystkie, tylko do zrobienia albo tylko zrobione i nie zmienia listy', () => {
