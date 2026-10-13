@@ -14,6 +14,7 @@ import {
   filterTasks,
   getPriority,
   sortByPriority,
+  searchTasks,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -206,4 +207,30 @@ test('sortByPriority: uszkodzony priorytet z zapisu (null, liczba) liczy się ja
     { id: 5, title: 'E', done: true, priority: null },
   ];
   assert.deepEqual(sortByPriority(tasks).map((task) => task.id), [4, 2, 3, 1, 5]);
+});
+
+test('searchTasks ignoruje wielkość liter i nie zmienia listy', () => {
+  const tasks = [
+    { id: 1, title: 'Kupić MLEKO', done: false },
+    { id: 2, title: 'Zadzwonić do mamy', done: true },
+    { id: 3, title: 'Mleko dla kota', done: true },
+  ];
+  assert.deepEqual(searchTasks(tasks, 'mleko').map((t) => t.id), [1, 3]);
+  assert.deepEqual(searchTasks(tasks, '  ŁĄKA ').map((t) => t.id), []);
+  assert.equal(tasks.length, 3);
+});
+
+test('searchTasks z pustym tekstem zwraca wszystkie zadania jako nową tablicę', () => {
+  const tasks = [{ id: 1, title: 'A', done: false }];
+  const result = searchTasks(tasks, '   ');
+  assert.deepEqual(result, tasks);
+  assert.notEqual(result, tasks);
+});
+
+test('searchTasks działa razem z filterTasks', () => {
+  const tasks = [
+    { id: 1, title: 'Kupić mleko', done: false },
+    { id: 2, title: 'Mleko dla kota', done: true },
+  ];
+  assert.deepEqual(searchTasks(filterTasks(tasks, 'done'), 'MLEKO').map((t) => t.id), [2]);
 });
