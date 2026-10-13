@@ -205,6 +205,8 @@ h1 {
 
 .task .title {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .task.done .title {
@@ -245,6 +247,7 @@ h1 {
 }
 
 .remove {
+  flex-shrink: 0;
   border: 0;
   background: none;
   color: var(--muted);
