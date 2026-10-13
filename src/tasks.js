@@ -92,6 +92,16 @@ export function filterTasks(tasks, filter) {
   return [...tasks];
 }
 
+// Wyszukiwanie: zadania, których treść zawiera tekst, bez względu na wielkość liter.
+// Pusty tekst (albo same spacje) nie zawęża listy.
+export function searchTasks(tasks, query) {
+  const needle = String(query ?? '').trim().toLocaleLowerCase('pl');
+  if (!needle) {
+    return [...tasks];
+  }
+  return tasks.filter((task) => task.title.toLocaleLowerCase('pl').includes(needle));
+}
+
 export function countActive(tasks) {
   return tasks.filter((task) => !task.done).length;
 }
