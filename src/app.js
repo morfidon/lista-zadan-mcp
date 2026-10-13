@@ -7,6 +7,7 @@ import {
   moveDoneToEnd,
   countActive,
   filterTasks,
+  searchTasks,
   sortByPriority,
   todayString,
   isOverdue,
@@ -23,6 +24,7 @@ const priorityInput = document.querySelector('#task-priority');
 const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const empty = document.querySelector('#empty');
+const searchInput = document.querySelector('#search');
 
 const themeToggle = document.querySelector('#theme-toggle');
 
@@ -62,6 +64,8 @@ const loaded = loadTasks();
 setRecoveryVisible(loaded.corrupted);
 let tasks = loaded.tasks;
 let filter = 'all';
+
+searchInput.addEventListener('input', () => render());
 
 for (const button of filterButtons) {
   button.addEventListener('click', () => {
@@ -117,7 +121,8 @@ function createTaskItem(task, today) {
 function render() {
   list.replaceChildren();
   const today = todayString();
-  const visible = filterTasks(sortByPriority(tasks), filter);
+  const query = searchInput.value.trim();
+  const visible = searchTasks(filterTasks(sortByPriority(tasks), filter), query);
   for (const task of visible) {
     list.append(createTaskItem(task, today));
   }
@@ -127,7 +132,13 @@ function render() {
   for (const button of filterButtons) {
     button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   }
-  empty.textContent = emptyMessages[tasks.length === 0 ? 'all' : filter];
+  if (tasks.length === 0) {
+    empty.textContent = emptyMessages.all;
+  } else if (query && filterTasks(tasks, filter).length > 0) {
+    empty.textContent = `Brak zadań pasujących do „${query}”.`;
+  } else {
+    empty.textContent = emptyMessages[filter];
+  }
   empty.hidden = visible.length > 0;
 }
 
