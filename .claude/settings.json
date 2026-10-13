@@ -11,5 +11,18 @@
   },
   "worktree": {
     "baseRef": "head"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/bramka-testow.mjs\"",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
   }
 }
