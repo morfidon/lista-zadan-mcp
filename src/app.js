@@ -4,8 +4,10 @@ import {
   addTask,
   toggleTask,
   removeTask,
+  removeDone,
   moveDoneToEnd,
   countActive,
+  countDone,
   filterTasks,
   searchTasks,
   sortByPriority,
@@ -25,6 +27,7 @@ const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const empty = document.querySelector('#empty');
 const searchInput = document.querySelector('#search');
+const clearDone = document.querySelector('#clear-done');
 
 const themeToggle = document.querySelector('#theme-toggle');
 
@@ -79,6 +82,8 @@ function update(next) {
   saveTasks(tasks);
   render();
 }
+
+clearDone.addEventListener('click', () => update(removeDone(tasks)));
 
 function createTaskItem(task, today) {
   const item = document.createElement('li');
@@ -140,6 +145,9 @@ function render() {
     empty.textContent = emptyMessages[filter];
   }
   empty.hidden = visible.length > 0;
+  const done = countDone(tasks);
+  clearDone.hidden = done === 0;
+  clearDone.textContent = `Usuń zrobione (${done})`;
 }
 
 form.addEventListener('submit', (event) => {

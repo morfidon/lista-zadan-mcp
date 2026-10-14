@@ -168,6 +168,18 @@ h1 {
   font-weight: 600;
 }
 
+.clear-done {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--danger);
+  border-radius: 10px;
+  background: none;
+  color: var(--danger);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 .recovery {
   display: flex;
   align-items: flex-start;
