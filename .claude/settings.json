@@ -1,7 +1,9 @@
 {
   "permissions": {
     "deny": [
-      "Read(./.env)"
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(./package-lock.json)"
     ],
     "ask": [
       "PowerShell(git push *)",
