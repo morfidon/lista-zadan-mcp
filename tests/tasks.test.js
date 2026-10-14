@@ -5,6 +5,7 @@ import {
   addTask,
   toggleTask,
   removeTask,
+  removeDone,
   countActive,
   countDone,
   moveDoneToEnd,
@@ -57,6 +58,20 @@ test('removeTask usuwa zadanie o danym id', () => {
     { id: 2, title: 'B', done: false },
   ];
   assert.deepEqual(removeTask(tasks, 1).map((task) => task.id), [2]);
+});
+
+test('removeDone usuwa wszystkie zrobione, zostawia pozostałe w tej samej kolejności i nie zmienia starej listy', () => {
+  const before = [
+    { id: 1, title: 'A', done: false },
+    { id: 2, title: 'B', done: true },
+    { id: 3, title: 'C', done: false, priority: 'high' },
+    { id: 4, title: 'D', done: true },
+  ];
+  const after = removeDone(before);
+  assert.deepEqual(after, [before[0], before[2]]);
+  assert.equal(before.length, 4);
+  assert.deepEqual(removeDone([{ id: 1, title: 'A', done: true }]), []);
+  assert.deepEqual(removeDone([]), []);
 });
 
 test('moveDoneToEnd przenosi zrobione na koniec, zachowuje kolejność i nie zmienia starej listy', () => {

@@ -79,6 +79,11 @@ export function removeTask(tasks, id) {
   return tasks.filter((task) => task.id !== id);
 }
 
+// Usuwa wszystkie zrobione zadania naraz; zadania do zrobienia zostają bez zmian.
+export function removeDone(tasks) {
+  return tasks.filter((task) => !task.done);
+}
+
 export function moveDoneToEnd(tasks) {
   return [...tasks.filter((task) => !task.done), ...tasks.filter((task) => task.done)];
 }
