@@ -145,7 +145,9 @@ function render() {
     empty.textContent = emptyMessages[filter];
   }
   empty.hidden = visible.length > 0;
-  clearDone.hidden = countDone(tasks) === 0;
+  const done = countDone(tasks);
+  clearDone.hidden = done === 0;
+  clearDone.textContent = `Usuń zrobione (${done})`;
 }
 
 form.addEventListener('submit', (event) => {
