@@ -132,8 +132,8 @@ test('isOverdue: brak terminu, zła wartość albo zrobione to nie po terminie',
   assert.equal(isOverdue({ id: 1, title: 'A', done: true, dueDate: '2026-03-01' }, '2026-03-10'), false);
 });
 
-test('formatDue pokazuje „dziś” dla dzisiejszego terminu, a datę dla pozostałych', () => {
-  assert.equal(formatDue('2026-03-09', '2026-03-09'), 'Termin: dziś');
+test('formatDue pokazuje „dzisiaj” dla dzisiejszego terminu, a datę dla pozostałych', () => {
+  assert.equal(formatDue('2026-03-09', '2026-03-09'), 'Termin: dzisiaj');
   assert.equal(formatDue('2026-03-11', '2026-03-09'), 'Termin: 2026-03-11');
   assert.equal(formatDue('2026-03-07', '2026-03-09'), 'Termin: 2026-03-07');
 });
