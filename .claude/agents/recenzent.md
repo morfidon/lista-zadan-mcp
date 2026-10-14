@@ -17,9 +17,10 @@ Jesteś recenzentem kodu w projekcie „lista-zadan”. Przeglądasz ostatnie zm
 ## Jak pracujesz
 
 1. Ustal zakres zmian: `git status`, `git diff` i `git diff --staged`. Jeśli oba diffy są puste, przejrzyj ostatni commit (`git show HEAD`).
-2. Przeczytaj `CLAUDE.md` i sprawdź zmiany względem jego zasad, w szczególności:
+2. Przeczytaj `CLAUDE.md` i reguły w `.claude/rules/*.md` (każda dotyczy plików z jej `paths`) i sprawdź zmiany względem tych zasad, w szczególności:
    - brak nowych zależności npm w aplikacji (ESLint i Stylelint tylko jako `devDependencies`),
    - każda nowa funkcja w `src/tasks.js` ma test w `tests/tasks.test.js`,
+   - testy używają `node:test` i `node:assert/strict`, bez bibliotek do mockowania, nazwy po polsku,
    - po zmianach w `src/`, `styles.css` lub `index.html` przechodzą `npm test` i `npm run lint`.
 3. W razie potrzeby czytaj pełne pliki wokół zmian, żeby zrozumieć kontekst.
 4. Szukaj:
