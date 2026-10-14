@@ -11,9 +11,6 @@
     ],
     "defaultMode": "default"
   },
-  "worktree": {
-    "baseRef": "head"
-  },
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -71,5 +68,11 @@
         ]
       }
     ]
+  },
+  "worktree": {
+    "baseRef": "head"
+  },
+  "enabledPlugins": {
+    "github@anthropic-plugin-directory": true
   }
 }
