@@ -147,6 +147,15 @@ test('countDueToday liczy tylko niezrobione zadania z terminem na dziś', () => 
   assert.equal(countDueToday([], '2026-03-10'), 0);
 });
 
+test('countDueToday nie liczy zadania z wczorajszym terminem', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false, dueDate: '2026-03-09' },
+    { id: 2, title: 'B', done: false, dueDate: '2026-03-10' },
+  ];
+  assert.equal(countDueToday([tasks[0]], '2026-03-10'), 0);
+  assert.equal(countDueToday(tasks, '2026-03-10'), 1);
+});
+
 test('isOverdue: po terminie dopiero od następnego dnia', () => {
   const task = { id: 1, title: 'A', done: false, dueDate: '2026-03-09' };
   assert.equal(isOverdue(task, '2026-03-10'), true);
