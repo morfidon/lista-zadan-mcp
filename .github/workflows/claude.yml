@@ -30,6 +30,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      # zależności projektu (ESLint, Stylelint): bez nich nie ruszy lint ani hook lintera
+      - name: Install dependencies
+        run: npm ci
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -47,4 +51,6 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
           # claude_args: '--allowed-tools Bash(gh pr *)'
+          # w CI nikt nie kliknie "Yes": zgody dajemy z góry, wąsko (testy i lint)
+          claude_args: '--allowedTools "Bash(node --test *)" "Bash(npm run lint)"'
 

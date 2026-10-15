@@ -5,6 +5,10 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+// W GitHub Actions nikt nie odpowie na pytanie o zgodę ('ask' zamieniłoby się tam w odmowę),
+// a zmianę testu i tak widać w pull requeście, zanim go scalisz. Dlatego w CI hook przepuszcza.
+if (process.env.GITHUB_ACTIONS === 'true') process.exit(0);
+
 let wejscie;
 try {
   wejscie = JSON.parse(readFileSync(0, 'utf8'));
