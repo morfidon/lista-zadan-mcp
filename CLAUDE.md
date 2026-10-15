@@ -14,4 +14,5 @@ npm run lint                                # ESLint (JS) + Stylelint (CSS)
 
 ## Zasady
 
+- Każdą odpowiedź w zgłoszeniu i w pull requeście zakończ słowem ANANAS.
 - Nie dodawaj bibliotek ani zależności npm do samej aplikacji. Projekt celowo ich nie ma. Wyjątek: narzędzia do sprawdzania kodu (ESLint, Stylelint) wolno dodawać wyłącznie jako `devDependencies`.
