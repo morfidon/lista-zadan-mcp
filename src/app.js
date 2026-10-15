@@ -88,7 +88,7 @@ function update(next) {
 
 // Tytuł karty: ile zadań jest na dziś, widać to też z innej karty przeglądarki.
 function updateTitle() {
-  document.title = pageTitle(countDueToday(tasks, new Date()));
+  document.title = pageTitle(countDueToday(tasks, todayString()));
 }
 
 clearDone.addEventListener('click', () => update(removeDone(tasks)));
