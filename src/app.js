@@ -8,6 +8,7 @@ import {
   moveDoneToEnd,
   countActive,
   countDone,
+  countDueToday,
   filterTasks,
   searchTasks,
   sortByPriority,
@@ -25,6 +26,7 @@ const dueInput = document.querySelector('#task-due');
 const priorityInput = document.querySelector('#task-priority');
 const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
+const dueToday = document.querySelector('#due-today');
 const empty = document.querySelector('#empty');
 const searchInput = document.querySelector('#search');
 const clearDone = document.querySelector('#clear-done');
@@ -134,6 +136,7 @@ function render() {
 
   const active = countActive(tasks);
   counter.textContent = `Do zrobienia: ${active}`;
+  dueToday.textContent = `Na dziś: ${countDueToday(tasks, today)}`;
   for (const button of filterButtons) {
     button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   }

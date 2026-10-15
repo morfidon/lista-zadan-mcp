@@ -8,6 +8,7 @@ import {
   removeDone,
   countActive,
   countDone,
+  countDueToday,
   moveDoneToEnd,
   todayString,
   isOverdue,
@@ -132,6 +133,18 @@ test('addTask przekazuje termin i nie zmienia starej listy', () => {
 test('todayString zwraca lokalną datę RRRR-MM-DD', () => {
   assert.equal(todayString(new Date(2026, 0, 5, 23, 59)), '2026-01-05');
   assert.equal(todayString(new Date(2026, 11, 31, 0, 0)), '2026-12-31');
+});
+
+test('countDueToday liczy tylko niezrobione zadania z terminem na dziś', () => {
+  const tasks = [
+    { id: 1, title: 'A', done: false, dueDate: '2026-03-10' },
+    { id: 2, title: 'B', done: true, dueDate: '2026-03-10' },
+    { id: 3, title: 'C', done: false },
+    { id: 4, title: 'D', done: false, dueDate: '2026-03-11' },
+    { id: 5, title: 'E', done: false, dueDate: '2026-03-10' },
+  ];
+  assert.equal(countDueToday(tasks, '2026-03-10'), 2);
+  assert.equal(countDueToday([], '2026-03-10'), 0);
 });
 
 test('isOverdue: po terminie dopiero od następnego dnia', () => {
