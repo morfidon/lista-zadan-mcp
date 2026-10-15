@@ -12,6 +12,9 @@
   "engines": {
     "node": ">=18"
   },
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.12.0",
