@@ -34,6 +34,10 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
+        env:
+          # agenci przeglądu pracują w tej samej turze; w tle akcja kończyła sesję przed ich wynikiem
+          # (zielony check, zero komentarzy: anthropics/claude-code-action#1646)
+          CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1"
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
