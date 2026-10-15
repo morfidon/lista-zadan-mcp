@@ -9,6 +9,7 @@ import {
   countActive,
   countDone,
   countDueToday,
+  pageTitle,
   filterTasks,
   searchTasks,
   sortByPriority,
@@ -85,6 +86,11 @@ function update(next) {
   render();
 }
 
+// Tytuł karty: ile zadań jest na dziś, widać to też z innej karty przeglądarki.
+function updateTitle() {
+  document.title = pageTitle(countDueToday(tasks, new Date()));
+}
+
 clearDone.addEventListener('click', () => update(removeDone(tasks)));
 
 function createTaskItem(task, today) {
@@ -151,6 +157,7 @@ function render() {
   const done = countDone(tasks);
   clearDone.hidden = done === 0;
   clearDone.textContent = `Usuń zrobione (${done})`;
+  updateTitle();
 }
 
 form.addEventListener('submit', (event) => {

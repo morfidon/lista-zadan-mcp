@@ -129,3 +129,8 @@ export function countDone(tasks) {
 export function countDueToday(tasks, today) {
   return tasks.filter((task) => !task.done && task.dueDate === today).length;
 }
+
+// Tytuł karty przeglądarki: liczba zadań na dziś przed nazwą listy; bez liczby, gdy na dziś nic nie ma.
+export function pageTitle(dueToday) {
+  return dueToday > 0 ? `(${dueToday}) Lista zadań` : 'Lista zadań';
+}
