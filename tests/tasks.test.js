@@ -9,6 +9,7 @@ import {
   countActive,
   countDone,
   countDueToday,
+  pageTitle,
   moveDoneToEnd,
   todayString,
   isOverdue,
@@ -280,4 +281,12 @@ test('searchTasks działa razem z filterTasks', () => {
     { id: 2, title: 'Mleko dla kota', done: true },
   ];
   assert.deepEqual(searchTasks(filterTasks(tasks, 'done'), 'MLEKO').map((t) => t.id), [2]);
+});
+
+test('pageTitle pokazuje liczbę zadań na dziś przed nazwą listy', () => {
+  assert.equal(pageTitle(3), '(3) Lista zadań');
+});
+
+test('pageTitle bez zadań na dziś zostawia samą nazwę listy', () => {
+  assert.equal(pageTitle(0), 'Lista zadań');
 });
