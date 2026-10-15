@@ -124,3 +124,8 @@ export function countActive(tasks) {
 export function countDone(tasks) {
   return tasks.filter((task) => task.done).length;
 }
+
+// Niezrobione zadania z terminem równym podanej dacie; bez terminu i zrobione pomijamy.
+export function countDueToday(tasks, today) {
+  return tasks.filter((task) => !task.done && task.dueDate === today).length;
+}
