@@ -16,6 +16,7 @@ import {
   filterTasks,
   getPriority,
   getRepeat,
+  formatRepeat,
   sortByPriority,
   searchTasks,
 } from '../src/tasks.js';
@@ -307,6 +308,21 @@ test('getRepeat: stare zadania bez pola i nieznane wartości nie powtarzają si�
   assert.equal(getRepeat({ repeat: 'daily' }), 'daily');
   assert.equal(getRepeat({ repeat: 'weekly' }), 'weekly');
   assert.equal(getRepeat({ repeat: 'monthly', repeatDay: 31 }), 'monthly');
+});
+
+test('formatRepeat zwraca nazwę okresu: codziennie, co tydzień, co miesiąc', () => {
+  assert.equal(formatRepeat({ repeat: 'daily', dueDate: '2026-03-09' }), 'codziennie');
+  assert.equal(formatRepeat({ repeat: 'weekly', dueDate: '2026-03-09' }), 'co tydzień');
+  assert.equal(formatRepeat({ repeat: 'monthly', repeatDay: 9, dueDate: '2026-03-09' }), 'co miesiąc');
+});
+
+test('formatRepeat: stary zapis bez pola i nieznana wartość dają pusty tekst', () => {
+  assert.equal(formatRepeat({ id: 1, title: 'A', done: false }), '');
+  assert.equal(formatRepeat({ id: 1, title: 'A', done: false, dueDate: '2026-03-09' }), '');
+  assert.equal(formatRepeat({ repeat: 'yearly' }), '');
+  assert.equal(formatRepeat({ repeat: null }), '');
+  assert.equal(formatRepeat({ repeat: 7 }), '');
+  assert.equal(formatRepeat({ repeat: 'toString' }), '');
 });
 
 test('sortByPriority: wysokie, normalne, niskie, a zrobione na końcu', () => {

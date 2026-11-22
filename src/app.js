@@ -15,6 +15,7 @@ import {
   todayString,
   isOverdue,
   formatDue,
+  formatRepeat,
   getPriority,
   PRIORITY_LABELS,
 } from './tasks.js';
@@ -118,7 +119,8 @@ function createTaskItem(task, today) {
   if (typeof task.dueDate === 'string') {
     const due = document.createElement('span');
     due.className = isOverdue(task, today) ? 'due overdue' : 'due';
-    due.textContent = formatDue(task.dueDate, today);
+    const repeat = formatRepeat(task);
+    due.textContent = repeat ? `${formatDue(task.dueDate, today)} · ${repeat}` : formatDue(task.dueDate, today);
     item.append(due);
   }
   item.append(remove);
