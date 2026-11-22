@@ -27,6 +27,14 @@ export function getRepeat(task) {
   return REPEATS.includes(task.repeat) ? task.repeat : null;
 }
 
+const REPEAT_LABELS = { daily: 'codziennie', weekly: 'co tydzień', monthly: 'co miesiąc' };
+
+// Tekst okresu przy terminie; zadanie bez powtarzania daje pusty tekst.
+export function formatRepeat(task) {
+  const repeat = getRepeat(task);
+  return repeat ? REPEAT_LABELS[repeat] : '';
+}
+
 // Termin jest opcjonalny: bez niego zadanie nie ma pola dueDate (RRRR-MM-DD).
 // Priorytet też: normalny jest domyślny i nie jest zapisywany w zadaniu.
 // Powtarzanie również: bez niego zadanie nie ma pól repeat ani repeatDay.
