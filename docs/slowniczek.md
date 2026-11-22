@@ -10,6 +10,7 @@ Ustalone nazwy pojęć z dziedziny aplikacji. Nowe nazwy w kodzie, na ekranie i 
 | Po terminie | `isOverdue` | „po terminie” |
 | Powtarzanie | `repeat`, wartości `daily`, `weekly`, `monthly` | „powtarzanie”: „codziennie”, „co tydzień”, „co miesiąc”; brak: „nie powtarza się” |
 | Dzień powtarzania | `repeatDay`, liczba 1–31 | nie pokazujemy na ekranie |
+| Kolejny termin | `nextDueDate` | „kolejny termin” |
 
 ## Szczegóły
 
@@ -19,3 +20,4 @@ Ustalone nazwy pojęć z dziedziny aplikacji. Nowe nazwy w kodzie, na ekranie i 
 - **Po terminie.** Zadanie niezrobione, którego termin minął: od dnia po terminie, nie w dniu terminu. Zadanie zrobione albo bez terminu nigdy nie jest po terminie. Termin ma format RRRR-MM-DD. W kodzie `isOverdue`.
 - **Powtarzanie.** Okres, co jaki zadanie wraca: codziennie, co tydzień albo co miesiąc. Wymaga terminu. Brak pola `repeat` (stare zapisy) oznacza „nie powtarza się”. Zaznaczenie zadania jako zrobione tworzy jego kopię do zrobienia z kolejnym terminem; powtarzanie przechodzi na kopię, a zrobione zadanie je traci. Kolejny termin to stary termin plus okres, dodawany tyle razy, aż wypadnie dziś lub później. Co miesiąc trzyma się dnia z pierwotnego terminu, a w krótszym miesiącu bierze jego ostatni dzień (31.01 → 28.02 → 31.03). Nieznana wartość kończy się błędem „Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.”
 - **Dzień powtarzania.** Dzień miesiąca z pierwotnego terminu, potrzebny przy „co miesiąc”, bo sam termin po skróceniu (31.01 → 28.02) go nie przechowuje. W kodzie `repeatDay`. Zapisujemy go tylko przy `repeat: 'monthly'`; przy innych okresach i bez powtarzania pola nie ma. Przechodzi na kopię razem z powtarzaniem.
+- **Kolejny termin.** Termin kopii zadania z powtarzaniem: stary termin plus okres, dodawany tyle razy, aż wypadnie dziś lub później. W kodzie `nextDueDate`.
