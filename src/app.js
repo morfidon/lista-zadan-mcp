@@ -24,6 +24,8 @@ const form = document.querySelector('#new-task');
 const input = document.querySelector('#task-title');
 const dueInput = document.querySelector('#task-due');
 const priorityInput = document.querySelector('#task-priority');
+const repeatInput = document.querySelector('#task-repeat');
+const formError = document.querySelector('#form-error');
 const list = document.querySelector('#tasks');
 const counter = document.querySelector('#counter');
 const dueToday = document.querySelector('#due-today');
@@ -153,16 +155,32 @@ function render() {
   clearDone.textContent = `Usuń zrobione (${done})`;
 }
 
+function showFormError(message) {
+  formError.textContent = message;
+  formError.hidden = !message;
+}
+
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   if (!input.value.trim()) {
+    showFormError('');
     input.focus();
     return;
   }
-  update(addTask(tasks, input.value, undefined, dueInput.value, priorityInput.value));
+  let next;
+  try {
+    next = addTask(tasks, input.value, undefined, dueInput.value, priorityInput.value, repeatInput.value);
+  } catch (error) {
+    // Np. „Powtarzanie wymaga terminu.” – zadanie nie jest dodawane, pola zostają.
+    showFormError(error.message);
+    return;
+  }
+  showFormError('');
+  update(next);
   input.value = '';
   dueInput.value = '';
   priorityInput.value = 'normal';
+  repeatInput.value = '';
   input.focus();
 });
 

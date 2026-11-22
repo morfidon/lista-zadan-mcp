@@ -36,7 +36,14 @@
         <option value="normal" selected>Normalny</option>
         <option value="high">Wysoki</option>
       </select>
+      <select id="task-repeat" aria-label="Powtarzanie">
+        <option value="" selected>Nie powtarza się</option>
+        <option value="daily">Codziennie</option>
+        <option value="weekly">Co tydzień</option>
+        <option value="monthly">Co miesiąc</option>
+      </select>
       <button type="submit">Dodaj zadanie</button>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
     </form>
 
     <div id="filters" class="filters" role="group" aria-label="Filtr zadań">
