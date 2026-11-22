@@ -16,6 +16,7 @@ import {
   filterTasks,
   getPriority,
   getRepeat,
+  nextDueDate,
   sortByPriority,
   searchTasks,
 } from '../src/tasks.js';
@@ -307,6 +308,74 @@ test('getRepeat: stare zadania bez pola i nieznane wartości nie powtarzają si�
   assert.equal(getRepeat({ repeat: 'daily' }), 'daily');
   assert.equal(getRepeat({ repeat: 'weekly' }), 'weekly');
   assert.equal(getRepeat({ repeat: 'monthly', repeatDay: 31 }), 'monthly');
+});
+
+test('nextDueDate codziennie: dodaje dni, aż termin wypadnie dziś', () => {
+  assert.equal(nextDueDate('2026-11-20', 'daily', undefined, '2026-11-22'), '2026-11-22');
+});
+
+test('nextDueDate co tydzień: ten sam dzień tygodnia i nie przed dziś', () => {
+  const dueDate = '2026-11-02';
+  const result = nextDueDate(dueDate, 'weekly', undefined, '2026-11-22');
+  assert.equal(result, '2026-11-23');
+  assert.equal(new Date(`${result}T00:00:00Z`).getUTCDay(), new Date(`${dueDate}T00:00:00Z`).getUTCDay());
+  assert.ok(result >= '2026-11-22');
+});
+
+test('nextDueDate co miesiąc z repeatDay 31: 31.01 → 28.02 → 31.03', () => {
+  const february = nextDueDate('2026-01-31', 'monthly', 31, '2026-01-31');
+  assert.equal(february, '2026-02-28');
+  assert.equal(nextDueDate(february, 'monthly', 31, february), '2026-03-31');
+});
+
+test('nextDueDate co miesiąc w roku przestępnym: 31.01 → 29.02', () => {
+  assert.equal(nextDueDate('2028-01-31', 'monthly', 31, '2028-01-31'), '2028-02-29');
+});
+
+test('nextDueDate: termin dawno miniony daje dziś lub później, nigdy przeszłość', () => {
+  const today = '2026-11-22';
+  assert.equal(nextDueDate('2026-05-20', 'daily', undefined, today), '2026-11-22');
+  const weekly = nextDueDate('2026-05-20', 'weekly', undefined, today);
+  assert.equal(weekly, '2026-11-25');
+  assert.equal(nextDueDate('2026-05-20', 'monthly', 20, today), '2026-12-20');
+  assert.equal(nextDueDate('2026-05-31', 'monthly', 31, today), '2026-11-30');
+});
+
+test('nextDueDate: okres wypadający dokładnie dziś daje dziś', () => {
+  assert.equal(nextDueDate('2026-11-21', 'daily', undefined, '2026-11-22'), '2026-11-22');
+  assert.equal(nextDueDate('2026-11-15', 'weekly', undefined, '2026-11-22'), '2026-11-22');
+  assert.equal(nextDueDate('2026-10-22', 'monthly', 22, '2026-11-22'), '2026-11-22');
+});
+
+test('nextDueDate: termin w przyszłości przesuwa się o jeden okres', () => {
+  const today = '2026-11-22';
+  assert.equal(nextDueDate('2026-12-05', 'daily', undefined, today), '2026-12-06');
+  assert.equal(nextDueDate('2026-12-05', 'weekly', undefined, today), '2026-12-12');
+  assert.equal(nextDueDate('2026-12-05', 'monthly', 5, today), '2027-01-05');
+});
+
+test('nextDueDate co miesiąc bez repeatDay liczy z dnia w dueDate', () => {
+  assert.equal(nextDueDate('2026-01-31', 'monthly', undefined, '2026-01-31'), '2026-02-28');
+  assert.equal(nextDueDate('2026-03-15', 'monthly', undefined, '2026-03-15'), '2026-04-15');
+  assert.equal(nextDueDate('2026-02-28', 'monthly', undefined, '2026-02-28'), '2026-03-28');
+});
+
+test('nextDueDate co miesiąc przez koniec roku: 31.12 → 31.01', () => {
+  assert.equal(nextDueDate('2026-12-31', 'monthly', 31, '2026-12-31'), '2027-01-31');
+});
+
+test('nextDueDate codziennie i co tydzień przez koniec roku i zmianę czasu', () => {
+  assert.equal(nextDueDate('2026-12-31', 'daily', undefined, '2026-12-31'), '2027-01-01');
+  assert.equal(nextDueDate('2026-03-25', 'weekly', undefined, '2026-03-25'), '2026-04-01');
+  assert.equal(nextDueDate('2026-10-24', 'daily', undefined, '2026-10-24'), '2026-10-25');
+});
+
+test('nextDueDate odrzuca nieznane powtarzanie', () => {
+  for (const repeat of [undefined, null, 'yearly']) {
+    assert.throws(() => nextDueDate('2026-03-09', repeat, undefined, '2026-03-09'), {
+      message: 'Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.',
+    });
+  }
 });
 
 test('sortByPriority: wysokie, normalne, niskie, a zrobione na końcu', () => {

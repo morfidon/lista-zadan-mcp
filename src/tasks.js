@@ -93,6 +93,42 @@ export function formatDue(dueDate, today) {
   return `Termin: ${dueDate}`;
 }
 
+// Liczba dni w miesiącu (month 1–12), liczona w UTC.
+function daysInMonth(year, month) {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+// Kolejny termin: stary termin plus okres, dodawany tyle razy, aż wypadnie dziś lub później.
+// 'monthly' trzyma się repeatDay, a w krótszym miesiącu bierze jego ostatni dzień (31.01 → 28.02 → 31.03).
+// Brak repeatDay (albo zła wartość) oznacza dzień z dueDate (0003).
+export function nextDueDate(dueDate, repeat, repeatDay, today) {
+  if (!REPEATS.includes(repeat)) {
+    throw new Error('Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.');
+  }
+  let next = dueDate;
+  if (repeat === 'monthly') {
+    const validDay = Number.isInteger(repeatDay) && repeatDay >= 1 && repeatDay <= 31;
+    const day = validDay ? repeatDay : Number(dueDate.slice(8, 10));
+    let year = Number(dueDate.slice(0, 4));
+    let month = Number(dueDate.slice(5, 7));
+    do {
+      month += 1;
+      if (month > 12) {
+        month = 1;
+        year += 1;
+      }
+      const monthDay = Math.min(day, daysInMonth(year, month));
+      next = `${year}-${String(month).padStart(2, '0')}-${String(monthDay).padStart(2, '0')}`;
+    } while (next < today);
+    return next;
+  }
+  const days = repeat === 'daily' ? 1 : 7;
+  do {
+    next = addDays(next, days);
+  } while (next < today);
+  return next;
+}
+
 export function toggleTask(tasks, id) {
   return tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task));
 }
