@@ -15,3 +15,5 @@ npm run lint                                # ESLint (JS) + Stylelint (CSS)
 ## Zasady
 
 - Nie dodawaj bibliotek ani zależności npm do samej aplikacji. Projekt celowo ich nie ma. Wyjątek: narzędzia do sprawdzania kodu (ESLint, Stylelint) wolno dodawać wyłącznie jako `devDependencies`.
+- Zanim nazwiesz coś w kodzie, na ekranie lub w komunikacie, sprawdź ustalone nazwy w `docs/slowniczek.md`.
+- Ważne decyzje są w `docs/decyzje/`. Zanim zmienisz coś, czego dotyczą, przeczytaj wpis i zapytaj mnie.
