@@ -129,8 +129,32 @@ export function nextDueDate(dueDate, repeat, repeatDay, today) {
   return next;
 }
 
-export function toggleTask(tasks, id) {
-  return tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task));
+// Zaznaczenie zadania z powtarzaniem jako zrobione: zostaje zrobione bez repeat i repeatDay,
+// a kopia do zrobienia (newId, kolejny termin od today) przejmuje oba pola i trafia tam, gdzie addTask.
+// Odznaczenie i zadania bez powtarzania (albo bez poprawnego terminu) zmieniają tylko done.
+export function toggleTask(tasks, id, newId, today) {
+  const target = tasks.find((task) => task.id === id);
+  const repeat = target ? getRepeat(target) : null;
+  if (!target || target.done || !repeat || !isValidDate(target.dueDate)) {
+    return tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task));
+  }
+  const validDay = Number.isInteger(target.repeatDay) && target.repeatDay >= 1 && target.repeatDay <= 31;
+  const repeatDay = validDay ? target.repeatDay : Number(target.dueDate.slice(8, 10));
+  const dueDate = nextDueDate(target.dueDate, repeat, repeatDay, today);
+  let copy = createTask(target.title, newId, dueDate, getPriority(target), repeat);
+  if (repeat === 'monthly') {
+    copy = { ...copy, repeatDay };
+  }
+  const updated = tasks.map((task) => {
+    if (task.id !== id) {
+      return task;
+    }
+    const done = { ...task, done: true };
+    delete done.repeat;
+    delete done.repeatDay;
+    return done;
+  });
+  return moveDoneToEnd([...updated, copy]);
 }
 
 export function removeTask(tasks, id) {

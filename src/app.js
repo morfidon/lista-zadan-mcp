@@ -95,7 +95,7 @@ function createTaskItem(task, today) {
   checkbox.type = 'checkbox';
   checkbox.checked = task.done;
   checkbox.setAttribute('aria-label', `Zrobione: ${task.title}`);
-  checkbox.addEventListener('change', () => update(moveDoneToEnd(toggleTask(tasks, task.id))));
+  checkbox.addEventListener('change', () => update(moveDoneToEnd(toggleTask(tasks, task.id, Date.now(), todayString()))));
 
   const title = document.createElement('span');
   title.className = 'title';

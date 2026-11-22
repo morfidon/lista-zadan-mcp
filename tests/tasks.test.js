@@ -55,6 +55,89 @@ test('toggleTask odhacza i przywraca zadanie', () => {
   assert.equal(toggleTask(once, 1)[0].done, false);
 });
 
+test('toggleTask bez powtarzania nie tworzy kopii, także z newId i today', () => {
+  const tasks = [{ id: 1, title: 'A', done: false, dueDate: '2026-11-20', priority: 'high' }];
+  const once = toggleTask(tasks, 1, 2, '2026-11-22');
+  assert.deepEqual(once, [{ id: 1, title: 'A', done: true, dueDate: '2026-11-20', priority: 'high' }]);
+  assert.deepEqual(toggleTask(once, 1, 3, '2026-11-22'), tasks);
+});
+
+test('toggleTask z powtarzaniem: oryginał zrobiony bez repeat i repeatDay, kopia do zrobienia', () => {
+  const before = [createTask('Czynsz', 1, '2026-11-10', 'high', 'monthly')];
+  const after = toggleTask(before, 1, 2, '2026-11-01');
+  assert.deepEqual(after, [
+    { id: 2, title: 'Czynsz', done: false, dueDate: '2026-12-10', repeat: 'monthly', repeatDay: 10, priority: 'high' },
+    { id: 1, title: 'Czynsz', done: true, dueDate: '2026-11-10', priority: 'high' },
+  ]);
+  assert.deepEqual(before[0], createTask('Czynsz', 1, '2026-11-10', 'high', 'monthly'));
+});
+
+test('toggleTask z powtarzaniem: kopia codzienna i cotygodniowa bez repeatDay i bez domyślnego priorytetu', () => {
+  const daily = toggleTask([createTask('A', 1, '2026-11-22', 'normal', 'daily')], 1, 2, '2026-11-22');
+  assert.deepEqual(daily[0], { id: 2, title: 'A', done: false, dueDate: '2026-11-23', repeat: 'daily' });
+  const weekly = toggleTask([createTask('B', 1, '2026-11-22', 'low', 'weekly')], 1, 2, '2026-11-22');
+  assert.deepEqual(weekly[0], {
+    id: 2,
+    title: 'B',
+    done: false,
+    dueDate: '2026-11-29',
+    repeat: 'weekly',
+    priority: 'low',
+  });
+});
+
+test('toggleTask z powtarzaniem po terminie: kopia ma termin dziś lub później', () => {
+  const tasks = [createTask('A', 1, '2026-10-01', 'normal', 'weekly')];
+  const [copy] = toggleTask(tasks, 1, 2, '2026-11-22');
+  assert.equal(copy.dueDate, '2026-11-26');
+  assert.equal(isOverdue(copy, '2026-11-22'), false);
+  const [daily] = toggleTask([createTask('B', 1, '2026-11-01', 'normal', 'daily')], 1, 2, '2026-11-22');
+  assert.equal(daily.dueDate, '2026-11-22');
+  assert.equal(isOverdue(daily, '2026-11-22'), false);
+});
+
+test('toggleTask co miesiąc przenosi repeatDay na kopię: 31.01 → 28.02 → 31.03', () => {
+  const first = [createTask('A', 1, '2026-01-31', 'normal', 'monthly')];
+  const second = toggleTask(first, 1, 2, '2026-01-31');
+  assert.deepEqual(second[0], { id: 2, title: 'A', done: false, dueDate: '2026-02-28', repeat: 'monthly', repeatDay: 31 });
+  const third = toggleTask(second, 2, 3, '2026-02-28');
+  assert.deepEqual(third[0], { id: 3, title: 'A', done: false, dueDate: '2026-03-31', repeat: 'monthly', repeatDay: 31 });
+});
+
+test('toggleTask co miesiąc bez repeatDay (stary zapis) liczy z dnia w dueDate i zapisuje go na kopii', () => {
+  const tasks = [{ id: 1, title: 'A', done: false, dueDate: '2026-01-31', repeat: 'monthly' }];
+  const [copy] = toggleTask(tasks, 1, 2, '2026-01-31');
+  assert.equal(copy.dueDate, '2026-02-28');
+  assert.equal(copy.repeatDay, 31);
+});
+
+test('toggleTask: odznaczenie zmienia tylko done, a ponowne zaznaczenie nie tworzy drugiej kopii', () => {
+  const checked = toggleTask([createTask('A', 1, '2026-11-22', 'normal', 'daily')], 1, 2, '2026-11-22');
+  const unchecked = toggleTask(checked, 1, 3, '2026-11-22');
+  assert.deepEqual(unchecked, [
+    { id: 2, title: 'A', done: false, dueDate: '2026-11-23', repeat: 'daily' },
+    { id: 1, title: 'A', done: false, dueDate: '2026-11-22' },
+  ]);
+  const again = toggleTask(unchecked, 1, 4, '2026-11-22');
+  assert.equal(again.length, 2);
+  assert.deepEqual(again.map((task) => task.id), [2, 1]);
+  assert.equal(again.find((task) => task.id === 1).done, true);
+});
+
+test('toggleTask: kopia trafia tam, gdzie nowe zadanie z addTask (przed zrobionymi)', () => {
+  const before = [
+    { id: 1, title: 'A', done: false },
+    createTask('B', 2, '2026-11-22', 'normal', 'daily'),
+    { id: 3, title: 'C', done: false },
+    { id: 4, title: 'D', done: true },
+  ];
+  const toggled = toggleTask(before, 2, 5, '2026-11-22');
+  const doneOriginal = { id: 2, title: 'B', done: true, dueDate: '2026-11-22' };
+  const added = addTask(moveDoneToEnd([before[0], doneOriginal, before[2], before[3]]), 'B', 5, '2026-11-23', 'normal', 'daily');
+  assert.deepEqual(toggled.map((task) => task.id), added.map((task) => task.id));
+  assert.deepEqual(toggled.map((task) => task.id), [1, 3, 5, 2, 4]);
+});
+
 test('removeTask usuwa zadanie o danym id', () => {
   const tasks = [
     { id: 1, title: 'A', done: false },
