@@ -9,7 +9,6 @@ Ustalone nazwy pojęć z dziedziny aplikacji. Nowe nazwy w kodzie, na ekranie i 
 | Do zrobienia | `active` | „do zrobienia” |
 | Po terminie | `isOverdue` | „po terminie” |
 | Powtarzanie | `repeat`, wartości `daily`, `weekly`, `monthly` | „powtarzanie”: „codziennie”, „co tydzień”, „co miesiąc”; brak: „nie powtarza się” |
-| Dzień powtarzania | `repeatDay`, liczba 1–31, tylko przy `repeat: 'monthly'` | nie pokazujemy na ekranie |
 
 ## Szczegóły
 
@@ -17,5 +16,4 @@ Ustalone nazwy pojęć z dziedziny aplikacji. Nowe nazwy w kodzie, na ekranie i 
 - **Priorytet.** W danych i w kodzie zostają kody `low`, `normal`, `high`. Komunikaty i etykiety podają polskie nazwy, np. „Priorytet musi być: niski, normalny albo wysoki.”
 - **Do zrobienia.** Zadanie, które nie jest zrobione (`!task.done`). W kodzie `active` (filtr `active`, `countActive`).
 - **Po terminie.** Zadanie niezrobione, którego termin minął: od dnia po terminie, nie w dniu terminu. Zadanie zrobione albo bez terminu nigdy nie jest po terminie. Termin ma format RRRR-MM-DD. W kodzie `isOverdue`.
-- **Powtarzanie.** Okres, co jaki zadanie wraca: codziennie, co tydzień albo co miesiąc. Wymaga terminu. Brak pola `repeat` (stare zapisy) oznacza „nie powtarza się”. Zaznaczenie zadania jako zrobione tworzy jego kopię do zrobienia z kolejnym terminem; powtarzanie przechodzi na kopię, a zrobione zadanie je traci. Kolejny termin to stary termin plus okres, dodawany tyle razy, aż wypadnie dziś lub później. Co miesiąc trzyma się dnia z pierwotnego terminu, a w krótszym miesiącu bierze jego ostatni dzień (31.01 → 28.02 → 31.03). Nieznana wartość przy dodawaniu to błąd: „Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.”
-- **Dzień powtarzania.** Dzień miesiąca z pierwotnego terminu zadania powtarzanego co miesiąc. Potrzebny, bo `dueDate` skrócony do końca krótszego miesiąca (np. 28.02) go nie przechowuje. Zapisywany tylko przy `repeat: 'monthly'`, przy innych okresach i bez powtarzania pola nie ma. Kopia zadania przejmuje go razem z powtarzaniem. W kodzie `repeatDay`.
+- **Powtarzanie.** Okres, co jaki zadanie wraca: codziennie, co tydzień albo co miesiąc. Wymaga terminu. Brak pola `repeat` (stare zapisy) oznacza „nie powtarza się”. Zaznaczenie zadania jako zrobione tworzy jego kopię do zrobienia z kolejnym terminem; powtarzanie przechodzi na kopię, a zrobione zadanie je traci. Kolejny termin to stary termin plus okres, dodawany tyle razy, aż wypadnie dziś lub później. Co miesiąc trzyma się dnia z pierwotnego terminu, a w krótszym miesiącu bierze jego ostatni dzień (31.01 → 28.02 → 31.03).
