@@ -114,6 +114,17 @@ h1 {
   font: inherit;
 }
 
+.form-error {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.form-error[hidden] {
+  display: none;
+}
+
 .new-task input[type="date"] {
   flex: 0 0 auto;
   color: var(--ink);
