@@ -20,15 +20,28 @@ export function getPriority(task) {
   return PRIORITIES.includes(task.priority) ? task.priority : 'normal';
 }
 
+export const REPEATS = ['daily', 'weekly', 'monthly'];
+
+// Brak pola (stare zapisy) lub nieznana wartość oznacza „nie powtarza się” (null).
+export function getRepeat(task) {
+  return REPEATS.includes(task.repeat) ? task.repeat : null;
+}
+
 // Termin jest opcjonalny: bez niego zadanie nie ma pola dueDate (RRRR-MM-DD).
 // Priorytet też: normalny jest domyślny i nie jest zapisywany w zadaniu.
-export function createTask(title, id = Date.now(), dueDate, priority = 'normal') {
+// Powtarzanie również: bez niego zadanie nie ma pól repeat ani repeatDay.
+// repeatDay (dzień miesiąca z terminu) zapisujemy tylko przy 'monthly'.
+export function createTask(title, id = Date.now(), dueDate, priority = 'normal', repeat) {
   const clean = String(title ?? '').trim();
   if (!clean) {
     throw new Error('Zadanie musi mieć treść.');
   }
   if (!PRIORITIES.includes(priority)) {
     throw new Error('Priorytet musi być: low, normal albo high.');
+  }
+  const repeats = repeat !== undefined && repeat !== null && repeat !== '';
+  if (repeats && !REPEATS.includes(repeat)) {
+    throw new Error('Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.');
   }
   let task = { id, title: clean, done: false };
   if (dueDate !== undefined && dueDate !== null && dueDate !== '') {
@@ -37,11 +50,20 @@ export function createTask(title, id = Date.now(), dueDate, priority = 'normal')
     }
     task = { ...task, dueDate };
   }
+  if (repeats) {
+    if (!('dueDate' in task)) {
+      throw new Error('Powtarzanie wymaga terminu.');
+    }
+    task = { ...task, repeat };
+    if (repeat === 'monthly') {
+      task = { ...task, repeatDay: Number(task.dueDate.slice(8, 10)) };
+    }
+  }
   return priority === 'normal' ? task : { ...task, priority };
 }
 
-export function addTask(tasks, title, id, dueDate, priority) {
-  return moveDoneToEnd([...tasks, createTask(title, id, dueDate, priority)]);
+export function addTask(tasks, title, id, dueDate, priority, repeat) {
+  return moveDoneToEnd([...tasks, createTask(title, id, dueDate, priority, repeat)]);
 }
 
 // Lokalna data (nie UTC), żeby „dziś” zgadzało się z dniem użytkownika.

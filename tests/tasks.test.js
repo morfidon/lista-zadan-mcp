@@ -15,6 +15,7 @@ import {
   formatDue,
   filterTasks,
   getPriority,
+  getRepeat,
   sortByPriority,
   searchTasks,
 } from '../src/tasks.js';
@@ -220,6 +221,92 @@ test('getPriority: stare zadania bez pola i nieznane wartości są normalne', ()
   assert.equal(getPriority({ id: 1, title: 'A', done: false }), 'normal');
   assert.equal(getPriority({ priority: 'xyz' }), 'normal');
   assert.equal(getPriority({ priority: 'low' }), 'low');
+});
+
+test('createTask zapisuje powtarzanie codziennie, co tydzień i co miesiąc', () => {
+  assert.deepEqual(createTask('A', 1, '2026-03-09', 'normal', 'daily'), {
+    id: 1,
+    title: 'A',
+    done: false,
+    dueDate: '2026-03-09',
+    repeat: 'daily',
+  });
+  assert.deepEqual(createTask('A', 1, '2026-03-09', 'normal', 'weekly'), {
+    id: 1,
+    title: 'A',
+    done: false,
+    dueDate: '2026-03-09',
+    repeat: 'weekly',
+  });
+  assert.deepEqual(createTask('A', 1, '2026-03-09', 'high', 'monthly'), {
+    id: 1,
+    title: 'A',
+    done: false,
+    dueDate: '2026-03-09',
+    repeat: 'monthly',
+    repeatDay: 9,
+    priority: 'high',
+  });
+});
+
+test('createTask bez powtarzania nie dodaje pól repeat ani repeatDay', () => {
+  for (const task of [
+    createTask('A', 1),
+    createTask('A', 1, '2026-03-09'),
+    createTask('A', 1, '2026-03-09', 'normal', undefined),
+    createTask('A', 1, '2026-03-09', 'normal', null),
+    createTask('A', 1, '2026-03-09', 'normal', ''),
+  ]) {
+    assert.equal('repeat' in task, false);
+    assert.equal('repeatDay' in task, false);
+    assert.equal(getRepeat(task), null);
+  }
+});
+
+test('createTask: repeatDay tylko przy co miesiąc, równy dniowi z terminu', () => {
+  assert.equal(createTask('A', 1, '2026-01-31', 'normal', 'monthly').repeatDay, 31);
+  assert.equal(createTask('A', 1, '2026-02-01', 'normal', 'monthly').repeatDay, 1);
+  assert.equal('repeatDay' in createTask('A', 1, '2026-01-31', 'normal', 'daily'), false);
+  assert.equal('repeatDay' in createTask('A', 1, '2026-01-31', 'normal', 'weekly'), false);
+});
+
+test('createTask: powtarzanie bez terminu kończy się błędem', () => {
+  for (const dueDate of [undefined, null, '']) {
+    for (const repeat of ['daily', 'weekly', 'monthly']) {
+      assert.throws(() => createTask('A', 1, dueDate, 'normal', repeat), {
+        message: 'Powtarzanie wymaga terminu.',
+      });
+    }
+  }
+});
+
+test('createTask odrzuca nieznane powtarzanie', () => {
+  for (const repeat of ['yearly', 'codziennie', 'DAILY', 1]) {
+    assert.throws(() => createTask('A', 1, '2026-03-09', 'normal', repeat), {
+      message: 'Powtarzanie musi być: codziennie, co tydzień albo co miesiąc.',
+    });
+  }
+});
+
+test('addTask przekazuje powtarzanie i nie zmienia starej listy', () => {
+  const before = [{ id: 1, title: 'A', done: false }];
+  const after = addTask(before, 'B', 2, '2026-01-31', 'normal', 'monthly');
+  assert.equal(after[1].repeat, 'monthly');
+  assert.equal(after[1].repeatDay, 31);
+  assert.equal(before.length, 1);
+  assert.equal('repeat' in addTask([], 'A', 1, '2026-01-31')[0], false);
+  assert.throws(() => addTask([], 'A', 1, '', 'normal', 'daily'), { message: 'Powtarzanie wymaga terminu.' });
+});
+
+test('getRepeat: stare zadania bez pola i nieznane wartości nie powtarzają się (null)', () => {
+  assert.equal(getRepeat({ id: 1, title: 'A', done: false }), null);
+  assert.equal(getRepeat({ id: 1, title: 'A', done: false, dueDate: '2026-03-09' }), null);
+  assert.equal(getRepeat({ repeat: 'yearly' }), null);
+  assert.equal(getRepeat({ repeat: null }), null);
+  assert.equal(getRepeat({ repeat: 7 }), null);
+  assert.equal(getRepeat({ repeat: 'daily' }), 'daily');
+  assert.equal(getRepeat({ repeat: 'weekly' }), 'weekly');
+  assert.equal(getRepeat({ repeat: 'monthly', repeatDay: 31 }), 'monthly');
 });
 
 test('sortByPriority: wysokie, normalne, niskie, a zrobione na końcu', () => {
