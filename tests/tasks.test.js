@@ -299,6 +299,14 @@ test('emptyMessage: wyszukiwanie bez wyników podaje szukany tekst bez spacji z 
   const tasks = [{ id: 1, title: 'Kupić mleko', done: false }];
   assert.equal(emptyMessage(tasks, 'all', '  chleb '), 'Brak zadań pasujących do „chleb”.');
   assert.equal(emptyMessage(tasks, 'active', 'chleb'), 'Brak zadań pasujących do „chleb”.');
+  assert.equal(emptyMessage([{ id: 2, title: 'Mleko', done: true }], 'done', 'chleb'), 'Brak zadań pasujących do „chleb”.');
+});
+
+test('emptyMessage: same spacje, null albo brak tekstu to nie wyszukiwanie', () => {
+  const tasks = [{ id: 1, title: 'Kupić mleko', done: false }];
+  assert.equal(emptyMessage(tasks, 'done', '   '), 'Żadne zadanie nie jest jeszcze zrobione.');
+  assert.equal(emptyMessage(tasks, 'done', null), 'Żadne zadanie nie jest jeszcze zrobione.');
+  assert.equal(emptyMessage(tasks, 'done', undefined), 'Żadne zadanie nie jest jeszcze zrobione.');
 });
 
 test('emptyMessage: wyszukiwanie w pustym filtrze pokazuje komunikat filtra', () => {
