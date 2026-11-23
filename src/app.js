@@ -11,6 +11,7 @@ import {
   countDueToday,
   filterTasks,
   searchTasks,
+  emptyMessage,
   sortByPriority,
   todayString,
   isOverdue,
@@ -51,11 +52,6 @@ themeToggle.addEventListener('click', () => {
 applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
 const filterButtons = document.querySelectorAll('#filters button');
-const emptyMessages = {
-  all: 'Brak zadań. Dodaj pierwsze!',
-  active: 'Nic do zrobienia. Odpocznij!',
-  done: 'Żadne zadanie nie jest jeszcze zrobione.',
-};
 
 const recovery = document.querySelector('#recovery');
 
@@ -140,13 +136,7 @@ function render() {
   for (const button of filterButtons) {
     button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   }
-  if (tasks.length === 0) {
-    empty.textContent = emptyMessages.all;
-  } else if (query && filterTasks(tasks, filter).length > 0) {
-    empty.textContent = `Brak zadań pasujących do „${query}”.`;
-  } else {
-    empty.textContent = emptyMessages[filter];
-  }
+  empty.textContent = emptyMessage(tasks, filter, query);
   empty.hidden = visible.length > 0;
   const done = countDone(tasks);
   clearDone.hidden = done === 0;

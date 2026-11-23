@@ -17,6 +17,7 @@ import {
   getPriority,
   sortByPriority,
   searchTasks,
+  emptyMessage,
 } from '../src/tasks.js';
 
 test('createTask usuwa spacje z początku i końca', () => {
@@ -280,4 +281,31 @@ test('searchTasks działa razem z filterTasks', () => {
     { id: 2, title: 'Mleko dla kota', done: true },
   ];
   assert.deepEqual(searchTasks(filterTasks(tasks, 'done'), 'MLEKO').map((t) => t.id), [2]);
+});
+
+test('emptyMessage: pusta lista zachęca do dodania zadania bez względu na filtr i wyszukiwanie', () => {
+  assert.equal(emptyMessage([], 'all', ''), 'Brak zadań. Dodaj pierwsze!');
+  assert.equal(emptyMessage([], 'done', 'mleko'), 'Brak zadań. Dodaj pierwsze!');
+});
+
+test('emptyMessage: pusty filtr ma własny komunikat', () => {
+  const allDone = [{ id: 1, title: 'A', done: true }];
+  const noneDone = [{ id: 1, title: 'A', done: false }];
+  assert.equal(emptyMessage(allDone, 'active', ''), 'Nic do zrobienia. Odpocznij!');
+  assert.equal(emptyMessage(noneDone, 'done', ''), 'Żadne zadanie nie jest jeszcze zrobione.');
+});
+
+test('emptyMessage: wyszukiwanie bez wyników podaje szukany tekst bez spacji z brzegów', () => {
+  const tasks = [{ id: 1, title: 'Kupić mleko', done: false }];
+  assert.equal(emptyMessage(tasks, 'all', '  chleb '), 'Brak zadań pasujących do „chleb”.');
+  assert.equal(emptyMessage(tasks, 'active', 'chleb'), 'Brak zadań pasujących do „chleb”.');
+});
+
+test('emptyMessage: wyszukiwanie w pustym filtrze pokazuje komunikat filtra', () => {
+  const tasks = [{ id: 1, title: 'Kupić mleko', done: false }];
+  assert.equal(emptyMessage(tasks, 'done', 'chleb'), 'Żadne zadanie nie jest jeszcze zrobione.');
+});
+
+test('emptyMessage: nieznany filtr dostaje komunikat jak dla wszystkich', () => {
+  assert.equal(emptyMessage([{ id: 1, title: 'A', done: false }], 'nieznany', ''), 'Brak zadań. Dodaj pierwsze!');
 });

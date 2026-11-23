@@ -117,6 +117,25 @@ export function searchTasks(tasks, query) {
   return tasks.filter((task) => task.title.toLocaleLowerCase('pl').includes(needle));
 }
 
+const EMPTY_MESSAGES = {
+  all: 'Brak zadań. Dodaj pierwsze!',
+  active: 'Nic do zrobienia. Odpocznij!',
+  done: 'Żadne zadanie nie jest jeszcze zrobione.',
+};
+
+// Komunikat, gdy widok nie pokazuje żadnego zadania. Wyszukiwanie wymieniamy
+// tylko wtedy, gdy to ono zawęziło listę; inaczej mówimy o pustym filtrze.
+export function emptyMessage(tasks, filter, query) {
+  const needle = String(query ?? '').trim();
+  if (tasks.length === 0) {
+    return EMPTY_MESSAGES.all;
+  }
+  if (needle && filterTasks(tasks, filter).length > 0) {
+    return `Brak zadań pasujących do „${needle}”.`;
+  }
+  return EMPTY_MESSAGES[filter] ?? EMPTY_MESSAGES.all;
+}
+
 export function countActive(tasks) {
   return tasks.filter((task) => !task.done).length;
 }
