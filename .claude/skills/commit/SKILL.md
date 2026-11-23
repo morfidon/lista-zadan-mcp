@@ -29,6 +29,6 @@ Ostatnie commity (styl wiadomości):
 2. Dodawaj pliki jawnie po nazwie (`git add plik1 plik2`), nigdy `git add .` ani `-A`.
 3. Nigdy nie dodawaj `.env` ani innych plików z sekretami. Jeśli ma trafić do commita, zatrzymaj się i powiedz o tym.
 4. Wiadomości po polsku, jak w historii projektu: krótki opis tego, co się zmieniło, od wielkiej litery, bez kropki na końcu, bez prefiksów typu `feat:`.
-5. Na końcu wiadomości dodaj linię z atrybucją podaną w kontekście sesji (`Co-Authored-By: ...`).
+5. Linię z atrybucją (`Co-Authored-By: ...`) dodaj tylko wtedy, gdy podaje ją kontekst sesji. Jeśli jej tam nie ma, nie dodawaj żadnej, także domyślnej.
 6. Po commitach uruchom `git status` i pokaż użytkownikowi, co zostało (lista commitów i ewentualne niezacommitowane pliki).
 7. Nie rób `git push`, `--amend`, `reset` ani `--no-verify`.
